@@ -22,7 +22,7 @@ where: δ = E\[Y \| A=1\] − E\[Y \| A=0\] stands for the population-level expe
 
 For each of the designs we consider three different types of primary endpoints:
 
--   **Countinous**: Change in HbA1c (%) from baseline to week 52
+-   **Continuous**: Change in HbA1c (%) from baseline to week 52
 
 -   **Binary:** HbA1c \< 7% achieved at Week 52
 
@@ -32,21 +32,21 @@ These two decisions are statistically interdependent: the choice of endpoint det
 
 Depending on the type of primary outcome variable, different statistical analyses are performed to indicate statistical significance of the results obtained. The choice of statistical test applied for outcome assessment influences sample size calculation, as different parameters have to be included in the chosen equation.
 
-Taking into account this two assumptions: trial design and type of primary outcome this are typical statistical test performed for final outcome evaluation:
+Taking into account these two assumptions: trial design and type of primary outcome these are typical statistical test performed for final outcome evaluation:
 
-| Endpoint | **Definition** | Statistical tests | Distribution assuptions |
-|----|----|----|----|
+| Endpoint | **Definition** | Statistical tests | Distribution assumptions |
+|------------------|------------------|------------------|------------------|
 | **Continuous** | Change in HbA1c (%) from baseline to Week 52 | Two-sample t-test / ANCOVA | ΔHbA1c \~ N(μ, σ²) |
 | **Binary** | HbA1c \< 7% achieved at Week 52 | Chi-square / Logistic regression | Y \~ Bernoulli(p) |
 | **Time-to-event** | Time to first HbA1c \< 7% crossing | Log-rank / Cox model | T \~ Exponential(λ) or Weibull(λ, k) |
 
-Two other important considerations must be taken into account when calculating sample size: controlling for the type I error by providing an appropriate level of significance. For clinical trials, this is usually usually set at α = 0.05, depending on the type of trial design: a two-sided test for superiority, two one-sided tests (TOST) for equivalence, and one-sided for non-inferiority.. The second consideration is power, which is the probability of correctly identifying an existing difference or effect as significant. This is usually kept at a level of 1 − β = 0.80, or 0.90 for a more restrictive design.
+Two other important considerations must be taken into account when calculating sample size: controlling for the type I error by providing an appropriate level of significance. For clinical trials, this is usually set at α = 0.05, depending on the type of trial design: a two-sided test for superiority, two one-sided tests (TOST) for equivalence, and one-sided for non-inferiority. The second consideration is power, which is the probability of correctly identifying an existing difference or effect as significant. This is usually kept at a level of 1 − β = 0.80, or 0.90 for a more restrictive design.
 
 # **Superiority Trials**
 
 A superiority trial is a type of randomized controlled trial designed to determine whether one intervention is more effective than another, typically compared to a placebo or standard of care. **Statistical superiority** is achieved when the observed difference between groups is unlikely to be due to chance, as defined by a pre-specified significance level (e.g., p \< 0.05). **Clinical superiority**, however, requires that the magnitude of the difference is large enough to be meaningful in real-world practice, reflecting a benefit that matters to patients or clinicians. Importantly, a trial can demonstrate statistical superiority without achieving clinical superiority if the effect size is too small to be practically relevant. Design of the choice of end point variable (continuous, binary or time-to-event) different equation are used which implies different sample size.
 
-Before we go to the actual calculation of sample size, two functions for z statistic calculation are created. Depending of the choice of test. Two-sided is a proper type for superioriy, ine-sided for non-inferiority trials and TOST for equivalence trials, this has implication of the the value of z statistic and subsequently on the size of sample. For equivalence trials, the TOST procedure requires each one-sided component to be tested at α = 0.05 (one-sided), corresponding to a 90% confidence interval, with power entered directly as z_β = Φ⁻¹(power).
+Before we go to the actual calculation of sample size, two functions for z statistic calculation are created. Depending of the choice of test. Two-sided is a proper type for superiority, one-sided for non-inferiority trials and TOST for equivalence trials, this has implication of the value of z statistic and subsequently on the size of sample. For equivalence trials, the TOST procedure requires each one-sided component to be tested at α = 0.05 (one-sided), corresponding to a 90% confidence interval, with power entered directly as z_β = Φ⁻¹(power).
 
 ```{r}
 # ---------------------------------------------------------------------------
@@ -79,7 +79,7 @@ cont_super <- function(alpha = 0.025, power = 0.80, k = 1,
 
 ```
 
-For binary outcome, we need to consider different parameters- **difference in event proportions between the treatment(pT) and control (pC) groups**, which is also called the **risk difference**. In the modeled scenario it means `pC` is the proportion of patients who normalize HbA1c on week 52 of **standard care**, based on prior literature and the pT sands for proportion of patients expected (or hope) to achieve HBA1c after 52 weeks of treatment on the **new drug**. In this case the expected difference is calculated as `d = pT - pC .`
+For binary outcome, we need to consider different parameters- **difference in event proportions between the treatment(pT) and control (pC) groups**, which is also called the **risk difference**. In the modeled scenario it means `pC` is the proportion of patients who normalize HbA1c on week 52 of **standard care**, based on prior literature and the pT stands for proportion of patients expected (or hope) to achieve HbA1c after 52 weeks of treatment on the **new drug**. In this case the expected difference is calculated as `d = pT - pC .`
 
 ```{r}
 .var_prop <- function(pT, pC, k) pT * (1 - pT) / k + pC * (1 - pC)
@@ -102,9 +102,9 @@ prop_super <- function(alpha = 0.025, power = 0.80, k = 1,
 
 In the next scenario we will consider **time-to-event** primary outcome variable which describes how fast the target value of HbA1C will be achieved on new drug compared to active control (Time to first HbA1c \< 7% crossing). For this scenario we will use Schoenfeld formula. To use it we need to specify several parameters.
 
--   `lambda_C` — the hazard rate of the event in the **control group** (standard care). For example if the median time to event on standard care is known to be 48 months, then we use an exponential model and calculat lambda as`lambda_C = log(2) / 48`
+-   `lambda_C` — the hazard rate of the event in the **control group** (standard care). For example if the median time to event on standard care is known to be 48 months, then we use an exponential model and calculate lambda as`lambda_C = log(2) / 48`
 
--   `HR` — the **hazard ratio** expected to achieve by the new drug. Hazard ratio of 0.75 meand that ewe expect the new drug reduces the event hazard by 25% relative to standard care.
+-   `HR` — the **hazard ratio** expected to achieve by the new drug. Hazard ratio of 0.75 means that ewe expect the new drug reduces the event hazard by 25% relative to standard care.
 
 -   `lambda_T = HR * lambda_C` — the implied hazard rate in the treatment group
 
@@ -116,7 +116,7 @@ In the next scenario we will consider **time-to-event** primary outcome variable
 
 -   `delta` — the **superiority margin on the log-HR scale**. If you only claim superiority when HR \< 1 meaningfully, a common choice is `delta = 0` (pure superiority, no margin required beyond HR \< 1). A non-zero delta would mean "we only claim superiority if HR is below exp(-delta)"
 
-What is important in this type of model it to use the same scale units for all time parameters so for example express ale the parameters in months or weeks. After specifing this parameters, the required sample size could be calcaleted with Schoenfeld formula.
+What is important in this type of model it to use the same scale units for all time parameters so for example express all the parameters in months or weeks. After specifying this parameters, the required sample size could be calcaleted with Schoenfeld formula.
 
 To run this in the most efficient way, we need to provide also some additional (helper) functions. Firstly, one for estimation of event probability under exponential survival model for a given group (control or treatment), given that group's constant hazard rate (lambda), accrual period (Ta) and follow-up period (Tb).
 
@@ -148,7 +148,7 @@ Secondly, for the **Schoenfeld-derived event count we need to calculate the mini
 
 ```
 
-Having this to helper functions desinged we can calaculated the sample size needed. We are taking into considetation required apha level and pover as well expected delta.
+Having these two helper functions designed, we can calculate the sample size needed. We are taking into consideration required alpha level and power as well expected delta.
 
 ```{r Superiority}
 tte_super <- function(alpha = 0.025, power = 0.80, k = 1,
@@ -174,7 +174,7 @@ cat("Superiority (prop):\n")
 print(prop_super(alpha=0.025, power=0.80, k=1, pT=0.55, pC=0.25, delta=0.15))
 ```
 
-For the **time-to-event outcome** (time to first HbA1c \< 7% crossing), based on published evidence the median time to achieve HbA1c \< 7% on active control is approximately 18 months, which under the exponential survival model gives a control group hazard rate of lambda_C=log(2)/18. We expect that new treatment will increase HR by 50% giving a hazard ratio of HR = 1.5 and meaning that the target value will be achevied 50% faster and an implied treatment group hazard rate lambda=1.5 \* lambda_C. We set superiority margin at log(1.3), meaning that we claime superiority only if new drug achieves target at least 30% faster than control. We are plannonin genrolment period of 12 months (Ta) and followup of 24 months(Tb).
+For the **time-to-event outcome** (time to first HbA1c \< 7% crossing), based on published evidence the median time to achieve HbA1c \< 7% on active control is approximately 18 months, which under the exponential survival model gives a control group hazard rate of lambda_C=log(2)/18. We expect that new treatment will increase HR by 50% giving a hazard ratio of HR = 1.5 and meaning that the target value will be achieved 50% faster and an implied treatment group hazard rate lambda=1.5 \* lambda_C. We set superiority margin at log(1.3), meaning that we claim superiority only if new drug achieves target at least 30% faster than control. We are planning an enrolment period of 12 months (Ta) and followup of 24 months(Tb).
 
 ```{r}
 lambda_C <- log(2) / 18
@@ -211,7 +211,7 @@ cont_noninf(alpha = 0.025, power = 0.80, k = 1,
             SD    = 1.8, d = 0,  delta = 0.5)
 ```
 
-For **binary** outcome, we assume the same response rate in the control arm as in the superiority scenario (pC = 0.25). Under the non-inferiority assumption both drugs are expected to perform equally, so pT = 0.25 as well, giving d = pT - pC = 0. The non-inferiority margin is set to delta = 0.10, meaning the new drug is acceptable if the proportion of patients achieving HbA1c \< 7% is not more than 10 percentage points lower than on active conttol.
+For **binary** outcome, we assume the same response rate in the control arm as in the superiority scenario (pC = 0.25). Under the non-inferiority assumption both drugs are expected to perform equally, so pT = 0.25 as well, giving d = pT - pC = 0. The non-inferiority margin is set to delta = 0.10, meaning the new drug is acceptable if the proportion of patients achieving HbA1c \< 7% is not more than 10 percentage points lower than on ctive control.
 
 ```{r}
 prop_noninf <- function(alpha = 0.025, power = 0.80, k = 1,
@@ -338,7 +338,7 @@ tte_equiv(alpha = 0.05,
           delta = log(1.3))
 ```
 
-## Sample size comparision
+## Sample size comparison
 
 ```{r}
 #| label: tbl-sample-sizes
@@ -404,7 +404,7 @@ kable(df, align = c("l","l","c","c","c","c","c","c"), booktabs = TRUE) |>
 
 ## Final comments
 
-The **time-to-event superiority** scenario stands out with n=1,022 — by far the largest. This is driven by the combination of a non-zero log-HR margin (log(1.3)) which shrinks the effective signal, and the relatively modest HR=1.5, leaving little room between the true effect and the claimed threshold.
+The **time-to-event superiority** scenario stands out with n=1,022 — by far the largest. This is driven by the combination of a non-zero log-HR margin (log(1.3)) which shrinks the effective signal, and the relatively modest HR=1.5, leaving little room between the true effect and the claimd threshold.
 
 The **continuous endpoint** produces identical totals for superiority and non-inferiority (408 each) — this is expected when both designs use the same α, SD, and margin δ=0.5, with d=1.0 in superiority effectively reducing to the same denominator as d=0 in non-inferiority (both yield `d − δ = 0.5` or `d + δ = 0.5`).
 
